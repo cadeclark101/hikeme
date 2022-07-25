@@ -1,6 +1,7 @@
 <h1> Login for HikeMe</h1>
 <form method="post">
     {% csrf_token %}
-    {{ token.as_p }}
+    {{ form.as_p }}
     <button type="submit"> Log In</button>
 </form>
+    
