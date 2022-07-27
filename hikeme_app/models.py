@@ -26,7 +26,14 @@ class Trail(models.Model):
     trail_name = models.CharField(max_length=100)
     trail_checkpoint = models.IntegerField()
     trail_length = models.IntegerField()
-    trail_warnings = models.CharField(max_length=100)
+
+class Warning(models.Model):
+    trail = models.ForeignKey(
+    Trail,
+    on_delete=models.CASCADE
+    )
+    warning = models.CharField(max_length=100)
+    datetime = models.DateTimeField()
     
 class Authority(models.Model):
     last_known_location = models.OneToOneField(

@@ -1,7 +1,7 @@
 {
   "name": "hikeme_node_network",
   "version": "1.0.0",
-  "description": "NodeJS hosting Node-RED to simulate hikeme's network of check-in locations.",
+  "description": "NodeJS application that simulates hikeme's network of check-in locations.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/cadeclark101/hikeme/issues"
   },
-  "homepage": "https://github.com/cadeclark101/hikeme#readme"
+  "homepage": "https://github.com/cadeclark101/hikeme#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
