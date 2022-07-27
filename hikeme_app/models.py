@@ -41,6 +41,5 @@ class Authority(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=100)
-    county = models.CharField(max_length=100)
     contact_number = models.IntegerField()
     
