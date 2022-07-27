@@ -2,9 +2,15 @@ const express = require('express')
 const app = express()
 const trail_checkpoints = require('./trail_data.js')
 
+app.set('view engine', 'pug');
+
 app.listen(5000, () => {
-    console.log('server is listening on port 5000')
+    console.log('Started Hikeme Node Network Simulator on 127.0.0.1:5000')
 })
+
+app.get("/hikemenodes", (req, res) => {
+    res.render('index')
+  });
 
 app.get('/checkpoint/:checkpoint_id' ,(req, res) => {
     const id = Number(req.params.checkpoint_id)
