@@ -1,1 +1,12 @@
-p hello from pug
+extends layout.pug
+
+block styles
+        style
+            // For some reason PUG will not look in public/css. Stylesheets must be kept alongside PUG pages.
+            include ./style.css 
+block scripts
+  script(src='/jquery.js')
+
+block content
+  div(class="imgBox")
+    img(src='public/images/england.JPG' class="englandImage")
