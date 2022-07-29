@@ -1,7 +1,7 @@
 const express = require('express')
 var path = require('path');
 const app = express()
-const trail_checkpoints = require('./trail_data.js')
+const trail_checkpoints = require('./script.js')
 
 app.set('view engine', 'pug');
 app.use("/public", express.static(path.join(__dirname, 'public')));
@@ -11,7 +11,7 @@ app.listen(5000, () => {
 })
 
 app.get("/hikemenodes", (req, res) => {
-    res.render('index')
+    res.render('index');
   });
 
 app.get('/checkpoint/:checkpoint_id' ,(req, res) => {
