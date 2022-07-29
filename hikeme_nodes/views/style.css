@@ -33,3 +33,13 @@
     font-size: 5px;
     position: absolute;
 }
+
+.north-downs-way-buttons {
+    background-color: blue; 
+    border: none;
+    padding: 3px 3px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 5px;
+    position: absolute;
+}
