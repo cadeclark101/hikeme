@@ -13,4 +13,33 @@ app.listen(5000, () => {
 
 app.get("/hikemenodes", (req, res) => {
     res.render('index');
-  });
+});
+
+
+
+
+
+const { Pool } = require("pg");
+
+const credentials = {
+  user: "postgres",
+  host: "localhost",
+  database: "hikeme_database",
+  password: "toor",
+  port: 5432,
+};
+
+
+async function poolDemo() {
+  const pool = new Pool(credentials);
+  const now = await pool.query("SELECT NOW()");
+  await pool.end();
+
+  return now;
+}
+
+(async () => {
+  const poolResult = await poolDemo();
+  console.log("Time with pool: " + poolResult.rows[0]["now"]);
+
+})();

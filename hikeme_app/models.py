@@ -23,23 +23,19 @@ class Trail(models.Model):
         Person,
         on_delete=models.CASCADE
     )
-    trail_name = models.CharField(max_length=100)
-    trail_checkpoint = models.IntegerField()
-    trail_length = models.IntegerField()
-
-class Warning(models.Model):
+    name = models.CharField(max_length=100)
+    
+class Trail_Checkpoint(models.Model):
     trail = models.ForeignKey(
     Trail,
     on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=100) 
+    
+class Warning(models.Model):
+    trail_checkpoint = models.ForeignKey(
+    Trail_Checkpoint,
+    on_delete=models.CASCADE
+    )
     warning = models.CharField(max_length=100)
     datetime = models.DateTimeField()
-    
-class Authority(models.Model):
-    last_known_location = models.OneToOneField(
-        Trail,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=100)
-    contact_number = models.IntegerField()
-    
