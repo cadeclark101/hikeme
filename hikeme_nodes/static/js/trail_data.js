@@ -37,5 +37,17 @@ var trailCHKpt8 = new Trail_Checkpoint(4, "Kent", trailCHKpt2Info, {kentWarning}
 var trailCHKpt9 = new Trail_Checkpoint(5, "Otford", trailCHKpt2Info, {null: null});
 var trailCHKpt10 = new Trail_Checkpoint(6, "Farnham", trailCHKpt2Info, {null: null});
 
-console.log(trailCHKpt1.warnings);
+const sqlite3 = require('sqlite3').verbose();                                                                                                                                           
+const db = new sqlite3.Database('/hikeme/hikeme_database.sqlite3');  
+var departure = new Date();
+var eta = new Date();
+
+db.run('INSERT INTO hikeme_app_person(id, first_name, last_name, contact_number, emergency_contact_number, address, departure, eta) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [0, "Cade", "Clark", 07549659167, 11111111111, "SG18 8EJ", eta, departure], function(err) {
+    if (err) {
+        return console.log(err.message);
+      }
+      console.log(`A row has been inserted with rowid ${this.lastID}`);
+});
+
+db.close()
 

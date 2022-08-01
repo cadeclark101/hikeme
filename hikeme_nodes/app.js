@@ -2,15 +2,11 @@ const express = require('express')
 const path = require('path');
 const app = express();
 const trail_data = require('./static/js/trail_data.js');
-const fs = require('fs');
-const sqlite3 = require('sqlite3');
 
 app.set('view engine', 'pug');
 
 app.use("/static", express.static('./static/'));
 app.use("/public", express.static(path.join(__dirname, 'public')));
-
-
 
 
 app.listen(5000, () => {
