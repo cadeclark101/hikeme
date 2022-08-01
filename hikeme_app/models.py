@@ -1,30 +1,12 @@
 from tkinter import CASCADE
 from django.db import models
 
-class Person(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    contact_number = models.IntegerField()
-    emergency_contact_number = models.IntegerField()
-    address = models.TextField()
-    departure = models.DateTimeField()
-    eta = models.DateTimeField()
-
 class Status(models.Model):
-    person_status = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE
-    )
     status = models.CharField(max_length=100)
-    datetime = models.DateTimeField()
 
 class Trail(models.Model):
-    person_trail = models.OneToOneField(
-        Person,
-        on_delete=models.CASCADE
-    )
     name = models.CharField(max_length=100)
-    
+
 class Trail_Checkpoint(models.Model):
     trail = models.ForeignKey(
     Trail,
@@ -38,4 +20,18 @@ class Warning(models.Model):
     on_delete=models.CASCADE
     )
     warning = models.CharField(max_length=100)
-    datetime = models.DateTimeField()
+
+class Person(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    contact_number = models.IntegerField()
+    emergency_contact_number = models.IntegerField()
+    address = models.TextField()
+    current_status = models.OneToOneField(
+        Status,
+        on_delete=models.CASCADE
+    )
+    current_trail = models.OneToOneField(
+        Trail,
+        on_delete=models.CASCADE
+    )
