@@ -20,6 +20,7 @@ class Warning(models.Model):
     on_delete=models.CASCADE
     )
     warning = models.CharField(max_length=100)
+    warning_rating = models.IntegerField()
 
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
@@ -31,7 +32,7 @@ class Person(models.Model):
         Status,
         on_delete=models.CASCADE
     )
-    current_trail = models.OneToOneField(
-        Trail,
+    current_trail_checkpoint = models.OneToOneField(
+        Trail_Checkpoint,
         on_delete=models.CASCADE
     )
