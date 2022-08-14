@@ -3,25 +3,28 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import sqlite3
-import django.contrib.auth.hashers
+from django.conf import settings
+settings.configure(DEBUG=True)
+from django.contrib.auth.hashers import check_password
+from passlib.handlers.django import django_pbkdf2_sha256
+
 
 def login(username, password):
     db = sqlite3.connect("hikeme_database.sqlite3")
     cur = db.cursor()
-    query = f"SELECT username from auth_user WHERE username='{username}';"
+    query = f"SELECT username, password from auth_user WHERE username='{username}';"
     cur.execute(query)
-    result = cur.fetchone()
-    if result is not None:
-        username = result
-        print(str(username) + " found!")
+    result = cur.fetchall()
+    grabbedUsername, grabbedPassword = result[[0][0]]
+    
+    if grabbedUsername is not None:
+        print("User: '" + username + "' found!")
+        if check_password(password, grabbedPassword):
+            print("Passwords match!")
+        else:
+            print("Wrong password!")
     else:
         print("Username not found!")
-    
-
-
-    #passwordValid = django.contrib.auth.hashers.check_password(password)
-    #if not passwordValid:
-    #    print("Wrong password.")
 
 root = Tk()
 root.geometry("1920x1080")
