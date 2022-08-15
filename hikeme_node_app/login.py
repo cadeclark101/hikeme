@@ -1,18 +1,16 @@
-from hashlib import new
 import tkinter
 from tkinter import *
-import sqlite3
+import database
 from django.conf import settings
 settings.configure(DEBUG=True)
 from django.contrib.auth.hashers import check_password
-
-db = sqlite3.connect("hikeme_database.sqlite3")
-cur = db.cursor()
 
 class LoginWindow(Toplevel):
     def __init__(self, mainapp, master=None):
         super().__init__(master=master)
         self.mainapp = mainapp
+
+        self.db, self.cur = database.connectToDB()
 
         self.geometry("300x100")
         self.title("Login")
@@ -21,17 +19,13 @@ class LoginWindow(Toplevel):
         self.usernameEntry.pack()
         self.passwordEntry = Entry(self, width = 25)
         self.passwordEntry.pack()
-        self.submitButton=tkinter.Button(self, text="Submit", command=lambda: self.login(str(self.usernameEntry.get()), str(self.passwordEntry.get())))
-        self.submitButton.pack()
-        self.label1 = Label(self, text="Try logging into a DJANGO Superuser.")
-        self.label1.pack(side=BOTTOM)
+        
+        self.submitButton=tkinter.Button(self, text="Submit", command=lambda: self.login(str(self.usernameEntry.get()), str(self.passwordEntry.get()))).pack()
+        self.label1 = Label(self, text="Try logging into a DJANGO Superuser.").pack(side=BOTTOM)
 
     def login(self, username, password):
-        query = f"SELECT username, password, is_superuser, id from auth_user WHERE username='{username}';"
-        cur.execute(query)
-        result = cur.fetchall()
-        grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = result[[0][0]]
-        
+        grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = database.getUserDetails(self.db, self.cur, username)
+
         if grabbedUsername is not None:
             if check_password(password, grabbedPassword):
                 currentUser = CurrentUser(grabbedID, grabbedUsername, grabbedPassword, grabbedSuperuserStatus)

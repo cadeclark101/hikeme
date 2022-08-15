@@ -1,17 +1,20 @@
 from asyncio.windows_events import NULL
 import tkinter
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import login
+import control_menu
 import os
 
 class MainWindow:
     def __init__(self, master):
         self.master = master
         self.master.title("Hikeme Node Network")
-        self.master.geometry("1920x1080")
+        self.master.geometry("487x778")
 
         self.master.currentUser = None
+        self.master.selectedCheckpoints = []
 
         self.master.englandImage = Image.open("hikeme_node_app\england.jpg")
         self.master.englandImage = ImageTk.PhotoImage(self.master.englandImage)
@@ -20,35 +23,40 @@ class MainWindow:
 
         self.master.pixel = tkinter.PhotoImage(width=5, height=5)
 
-        self.master.fileyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue')
-        self.master.fileyButton.place(x=360, y=400)
-        self.master.saltburnButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue')
-        self.master.saltburnButton.place(x=325, y=375)
-        self.master.helmsleyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue')
-        self.master.helmsleyButton.place(x=325, y=395)
+        self.master.fileyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(0)).place(x=360, y=400)
+        self.master.saltburnButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(1)).place(x=325, y=375)
+        self.master.helmsleyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(2)).place(x=325, y=395)
 
-        self.master.mineheadButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black')
-        self.master.mineheadButton.place(x=217, y=636)
-        self.master.stivesButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black')
-        self.master.stivesButton.place(x=130, y=715)
-        self.master.brixhamButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black')
-        self.master.brixhamButton.place(x=222, y=694)
-        self.master.pooleButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black')
-        self.master.pooleButton.place(x=299, y=675)
+        self.master.mineheadButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=217, y=636)
+        self.master.stivesButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=130, y=715)
+        self.master.brixhamButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=222, y=694)
+        self.master.pooleButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=299, y=675)
 
-        self.master.doverButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red')
-        self.master.doverButton.place(x=450, y=636)
-        self.master.kentButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red')
-        self.master.kentButton.place(x=433, y=628)
-        self.master.otfordButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red')
-        self.master.otfordButton.place(x=390, y=620)
-        self.master.farnhamButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red')
-        self.master.farnhamButton.place(x=350, y=625)
+        self.master.doverButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red').place(x=450, y=636)
+        self.master.kentButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red').place(x=433, y=628)
+        self.master.otfordButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red').place(x=390, y=620)
+        self.master.farnhamButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='red').place(x=350, y=625)
         
-        self.master.loginButton=tkinter.Button(self.master, text="Login", command=lambda: login.LoginWindow(self.master, self.master.currentUser))
-        self.master.loginButton.place(bordermode=OUTSIDE)
+        self.master.loginButton=tkinter.Button(self.master, text="Login", command= self.openLoginWindow).pack()
+
+        self.master.menuButton=tkinter.Button(self.master, text="Menu", command= self.openMenuWindow).pack()
 
         self.master.englandImageLabel.place(x=0, y=0)
+
+    def selectCheckpoint(self, checkpointID):
+        self.master.selectedCheckpoints.append(checkpointID)
+
+    def openMenuWindow(self):
+        if self.master.currentUser is not None:
+            if self.master.currentUser.is_superuser:
+                control_menu.SuperuserControlMenuWindow(self.master)
+            else:
+                control_menu.ControlMenuWindow(self.master)
+        else:
+            tkinter.messagebox.showinfo(title="Error", message="Not logged in.")
+
+    def openLoginWindow(self):
+        login.LoginWindow(self.master, self.master.currentUser)
 
     def run(self):
         self.master.mainloop()
