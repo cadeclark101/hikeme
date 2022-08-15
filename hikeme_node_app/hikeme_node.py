@@ -14,7 +14,7 @@ class MainWindow:
         self.master.geometry("487x778")
 
         self.master.currentUser = None
-        self.master.selectedCheckpoints = []
+        self.master.selectedCheckpoint = None
 
         self.master.englandImage = Image.open("hikeme_node_app\england.jpg")
         self.master.englandImage = ImageTk.PhotoImage(self.master.englandImage)
@@ -23,9 +23,9 @@ class MainWindow:
 
         self.master.pixel = tkinter.PhotoImage(width=5, height=5)
 
-        self.master.fileyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(0)).place(x=360, y=400)
-        self.master.saltburnButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(1)).place(x=325, y=375)
-        self.master.helmsleyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.selectCheckpoint(2)).place(x=325, y=395)
+        self.master.fileyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.openMenuWindow(0)).place(x=360, y=400)
+        self.master.saltburnButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.openMenuWindow(1)).place(x=325, y=375)
+        self.master.helmsleyButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='blue', command=lambda: self.openMenuWindow(2)).place(x=325, y=395)
 
         self.master.mineheadButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=217, y=636)
         self.master.stivesButton=tkinter.Button(self.master, text="", image=self.master.pixel, bg='black').place(x=130, y=715)
@@ -39,18 +39,11 @@ class MainWindow:
         
         self.master.loginButton=tkinter.Button(self.master, text="Login", command= self.openLoginWindow).pack()
 
-        self.master.menuButton=tkinter.Button(self.master, text="Menu", command= self.openMenuWindow).pack()
-
         self.master.englandImageLabel.place(x=0, y=0)
 
-    def selectCheckpoint(self, checkpointID):
-        self.master.selectedCheckpoints.append(checkpointID)
-
-    def openMenuWindow(self):
+    def openMenuWindow(self, selectedCheckpoint):
         if self.master.currentUser is not None:
-            if self.master.currentUser.is_superuser:
-                control_menu.SuperuserControlMenuWindow(self.master)
-            else:
+                self.master.selectedCheckpoint = selectedCheckpoint
                 control_menu.ControlMenuWindow(self.master)
         else:
             tkinter.messagebox.showinfo(title="Error", message="Not logged in.")
