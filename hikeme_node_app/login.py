@@ -24,7 +24,7 @@ class LoginWindow(Toplevel):
         self.label1 = Label(self, text="Try logging into a DJANGO Superuser.").pack(side=BOTTOM)
 
     def login(self, username, password):
-        grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = database.getUserDetails(self.db, self.cur, username)
+        grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = database.getUserDetails(self.cur, username)
 
         if grabbedUsername is not None:
             if check_password(password, grabbedPassword):

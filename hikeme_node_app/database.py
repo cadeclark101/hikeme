@@ -5,10 +5,11 @@ def connectToDB():
     cur = db.cursor()
     return db, cur
 
-def getUserDetails(db, cur, username):
+def getUserDetails(cur, username):
     query = f"SELECT username, password, is_superuser, id from auth_user WHERE username='{username}';"
     cur.execute(query)
     result = cur.fetchall()
     grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = result[[0][0]]
     return grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID
+
         
