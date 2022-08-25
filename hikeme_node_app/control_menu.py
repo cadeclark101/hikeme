@@ -1,11 +1,16 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter import Listbox      
+from tkinter import Listbox  
+from tkinter import messagebox 
+
+
+
 
 class ControlMenuWindow(Toplevel):
     def __init__(self, mainapp, master=None):
         super().__init__(master=master)
         self.mainapp = mainapp
+        self.protocol("WM_DELETE_WINDOW", self.onClose)
 
         self.geometry("500x500")
         self.title("Control Menu")
@@ -22,14 +27,28 @@ class ControlMenuWindow(Toplevel):
         
         self.t_scroll = Scrollbar(self)
         self.t_scroll.pack(side=RIGHT, fill=Y)
-        self.t_table = ttk.Treeview(self, yscrollcommand=self.t_scroll.set)
+        self.t_table = ttk.Treeview(self, columns="checkpointIDcol", show="headings", yscrollcommand=self.t_scroll.set)
         self.t_scroll.config(command=self.t_table.yview) 
-        self.loadInit()
+        self.t_table.heading("checkpointIDcol", text="Checkpoint ID")
+        self.loadInitTable()
         self.t_table.pack()
 
-    def loadInit(self):
-        for i in self.selectedCheckpoints:
-            self.t_table.insert('', 'end', i, text=i)
+
+    
+
+    def loadInitTable(self):
+        if self.selectedCheckpoints is not None:
+            for i in self.selectedCheckpoints:
+                self.t_table.insert('', 'end', i, values=i)
+
+
 
     def updateTree(self):
-        self.t_table.insert(parent='', index='end', text=self.mainapp.selectedCheckpoints[-1])
+        self.t_table.insert(parent='', index='end', values=self.mainapp.selectedCheckpoints[-1])
+
+
+        
+
+    def onClose(self):
+        self.mainapp.selectedCheckpoints = []
+        self.destroy()
