@@ -1,8 +1,5 @@
 import sqlite3
 
-
-
-
 def connectToDB():
     db = sqlite3.connect("hikeme_database.sqlite3")
     cur = db.cursor()
@@ -22,5 +19,38 @@ def getUserDetails(cur, grabbedID):
     cur.execute(query)
     result = cur.fetchall()
     grabbedFirstName, grabbedLastName, grabbedContactNumber, grabbedEmergencyContactNumber, grabbedAddress, grabbedCurrentStatusID, grabbedCurrentTrailCheckpointID = result[[0][0]]
-    print(result)
+
     return grabbedFirstName, grabbedLastName, grabbedContactNumber, grabbedEmergencyContactNumber, grabbedAddress, grabbedCurrentStatusID, grabbedCurrentTrailCheckpointID
+
+
+def getTrailDetails(cur):
+    query = f"SELECT * from hikeme_app_trail;"
+    cur.execute(query)
+    result = cur.fetchall()
+    print(result)
+
+
+
+def getTrailCheckpointDetails(cur):
+    query = f"SELECT * from hikeme_app_trail_checkpoints;"
+    cur.execute(query)
+    result = cur.fetchall()
+    for i in result:
+        print(i[1])
+
+
+
+class Trail:
+    def __init__(self, id, trailName):
+        self.trailID = id
+        self.trailName = trailName
+        self.checkpoints = []
+
+    def addCheckpoint(self, checkpointID):
+        self.checkpoints.append(checkpointID)
+
+class TrailCheckpoint:
+    def __init__(self, id, checkpointName, trailID):
+        self.trailCheckpointID = id
+        self.checkpointName = checkpointName
+        self.trailID = trailID

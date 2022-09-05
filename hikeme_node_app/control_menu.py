@@ -1,3 +1,4 @@
+from cgitb import enable
 from tkinter import *
 from tkinter import ttk
 from tkinter import Listbox  
@@ -17,6 +18,13 @@ class ControlMenuWindow(Toplevel):
 
         self.selectedCheckpoints = self.mainapp.selectedCheckpoints
 
+        if self.master.currentUser.is_superuser:
+            self.loadInitUI()
+
+
+
+
+    def loadInitUI(self):
         #self.label1 = Label(self, text="Checkpoint ID: " + str(self.mainapp.selectedCheckpoint)).pack()
         #self.label2 = Label(self, text="Warning:").pack()
         
@@ -30,13 +38,11 @@ class ControlMenuWindow(Toplevel):
         self.t_table = ttk.Treeview(self, columns="checkpointIDcol", show="headings", yscrollcommand=self.t_scroll.set)
         self.t_scroll.config(command=self.t_table.yview) 
         self.t_table.heading("checkpointIDcol", text="Checkpoint ID")
-        self.loadInitTable()
+        self.loadInitTableElements()
         self.t_table.pack()
 
 
-    
-
-    def loadInitTable(self):
+    def loadInitTableElements(self):
         if self.selectedCheckpoints is not None:
             for i in self.selectedCheckpoints:
                 self.t_table.insert('', 'end', i, values=i)

@@ -20,13 +20,21 @@ class LoginWindow(Toplevel):
         self.geometry("300x100")
         self.title("Login")
         
+        self.loadInitUI()
+
+
+
+
+
+    def loadInitUI(self):
         self.usernameEntry = Entry(self, width = 25)
         self.usernameEntry.pack()
         self.passwordEntry = Entry(self, width = 25)
         self.passwordEntry.pack()
         
         self.submitButton=tkinter.Button(self, text="Submit", command=lambda: self.login(str(self.usernameEntry.get()), str(self.passwordEntry.get()))).pack()
-        self.label1 = Label(self, text="Try logging into a DJANGO Superuser.").pack(side=BOTTOM)
+        #self.label1 = Label(self, text="Try logging into a DJANGO Superuser.").pack(side=BOTTOM)
+
 
 
 
@@ -34,6 +42,7 @@ class LoginWindow(Toplevel):
     def login(self, username, password):
         grabbedUsername, grabbedPassword, grabbedSuperuserStatus, grabbedID = database.getUserLoginDetails(self.cur, username)
         grabbedFirstName, grabbedLastName, grabbedContactNumber, grabbedEmergencyContactNumber, grabbedAddress, grabbedCurrentStatusID, grabbedCurrentTrailCheckpointID = database.getUserDetails(self.cur, grabbedID)
+    
 
         if grabbedUsername is not None:
             if check_password(password, grabbedPassword):
@@ -50,7 +59,7 @@ class LoginWindow(Toplevel):
 
 class CurrentUser:
     def __init__(self, id, username, password, is_superuser, firstName, lastName, contactNumber, emergencyContactNumber, address, currentStatusID, currentCheckpointID):
-        self.userId = id
+        self.userID = id
         self.username = username
         self.password = password
         self.is_superuser = is_superuser 
