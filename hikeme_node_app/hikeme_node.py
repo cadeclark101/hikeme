@@ -17,8 +17,12 @@ class MainWindow:
         self.master.geometry("487x778")
 
         self.master.topWindow = None
-        self.master.currentUser = None
+
+        self.master.allTrailInfo = None
+        self.master.allTrailCheckpointInfo = None
         self.master.selectedCheckpoints = []
+
+        self.master.currentUser = None
 
         self.loadInitUI()
         
@@ -52,17 +56,14 @@ class MainWindow:
         self.master.openMenuButton=tkinter.Button(self.master, text="Menu", command= self.openMenuWindow).pack()
 
         self.master.englandImageLabel.place(x=0, y=0)
-    
-
-    #def displayUserDetails(self):
-        #if self.master.currentUser is not None:
-            #self.master.userDetailsTitle = tkinter.Label(self.master ,text ='CURRENT USER:').place(relx = 0.0, rely = 1.0, anchor ='sw')
+            
 
 
     def updatedSelectedCheckpoints(self, selectedCheckpoint):
-        self.master.selectedCheckpoints.append(selectedCheckpoint)
-        if self.master.topWindow is not None:
-            self.master.topWindow.updateTree()
+        if selectedCheckpoint not in self.master.selectedCheckpoints:
+            self.master.selectedCheckpoints.append(selectedCheckpoint)
+            if self.master.topWindow is not None:
+                self.master.topWindow.updateTree()
 
 
 
@@ -77,7 +78,7 @@ class MainWindow:
 
 
     def openLoginWindow(self):
-        self.master.topWindow = login.LoginWindow(self.master, self.master.currentUser)
+        self.master.topWindow = login.LoginWindow(self.master)
 
 
 

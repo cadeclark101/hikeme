@@ -1,3 +1,4 @@
+import re
 import sqlite3
 
 def connectToDB():
@@ -27,30 +28,11 @@ def getTrailDetails(cur):
     query = f"SELECT * from hikeme_app_trail;"
     cur.execute(query)
     result = cur.fetchall()
-    print(result)
-
+    return result[[0][0]]
 
 
 def getTrailCheckpointDetails(cur):
     query = f"SELECT * from hikeme_app_trail_checkpoints;"
     cur.execute(query)
     result = cur.fetchall()
-    for i in result:
-        print(i[1])
-
-
-
-class Trail:
-    def __init__(self, id, trailName):
-        self.trailID = id
-        self.trailName = trailName
-        self.checkpoints = []
-
-    def addCheckpoint(self, checkpointID):
-        self.checkpoints.append(checkpointID)
-
-class TrailCheckpoint:
-    def __init__(self, id, checkpointName, trailID):
-        self.trailCheckpointID = id
-        self.checkpointName = checkpointName
-        self.trailID = trailID
+    return result[[0][0]]
