@@ -1,3 +1,4 @@
+from functools import partial
 import multiprocessing
 import threading
 from tkinter import *
@@ -49,39 +50,35 @@ class ControlMenuWindow(Toplevel):
         self.warningNumEntry = Entry(self.menuItemsFrame, width=5)
         self.warningNumEntry.grid(row = 2, column = 2, sticky=N, padx=15)
 
-        self.goButton = Button(self.menuItemsFrame, text="GO", command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get())).grid(row = 3, column=0, sticky=NW, padx=20)
-        self.stopButton = Button(self.menuItemsFrame, text="STOP").grid(row = 3, column=2, sticky=NE, padx=15)
+        self.label4 = Label(self.menuItemsFrame, text= "NO. OF PROCESSES").grid(row = 3, column=0, sticky=N, padx=20)
+        self.processNumEntry = Entry(self.menuItemsFrame, width=5)
+        self.processNumEntry.grid(row = 3, column = 2, sticky=N, padx=15)
+
+        self.goButton = Button(self.menuItemsFrame, text="GO", command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get(), self.processNumEntry.get())).grid(row = 4, column=0, sticky=NW, padx=20)
+        self.stopButton = Button(self.menuItemsFrame, text="STOP").grid(row = 4, column=2, sticky=NE, padx=15)
         
         self.menuItemsFrame.grid(row=0, column=0, sticky= NE)
 
         self.outputFeedBox = Text(self, height=9, width=60).grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
 
-
-
-    def handleGoButton(self, checkinN, warningN):
-        grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
+    def handleGoButton(self, checkinN, warningN, processN):
+        grabbedUserIDs = database.getNumPersonID(self.cur, warningN)
         grabbedUserIDsLength = len(grabbedUserIDs)
         if grabbedUserIDsLength < int(checkinN) or grabbedUserIDsLength < int(warningN):
             self.label4 = Label(self.menuItemsFrame, text=("ONLY %s USER IDs EXIST" % grabbedUserIDsLength)).grid(row = 4, column=0, sticky=S, pady=60, columnspan=3)
-
-        if threading.activeCount() > 1:
-            pass #kill all threads
+        self.createWarningInsertProcesses(int(warningN), int(processN), grabbedUserIDs)
 
 
-    def createWarningInsertProcesses(self, n):
-        num_procs = n
-
-        print(f"Spawning {num_procs} processes")
-
-        pool = multiprocessing.Pool(num_procs)
-
-        results = pool.map(database.insertWarning(tableName, warning, warningRating, trailCheckPointID, personID), n)
-        # generate random warning, warning rating, personID for each insert
+    def createWarningInsertProcesses(self, warningN, processN, grabbedUserIDs):
+        async_results = []
+        with multiprocessing.Pool(processes=processN) as pool:
+            for _ in range(warningN):
+                async_results.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, len(grabbedUserIDs))))
         pool.close()
         pool.join()
+ 
 
-        print(f"{num_procs} processes complete.")
 
 
     def loadInitTableElements(self):

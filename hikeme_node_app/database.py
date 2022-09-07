@@ -1,6 +1,7 @@
 from functools import cache
 import re
 import sqlite3
+import random
 
 def connectToDB():
     db = sqlite3.connect("hikeme_database.sqlite3")
@@ -45,9 +46,17 @@ def getNumPersonID(cur, n):
     result = cur.fetchall()
     return result
 
-def insertWarning(tableName, warning, warningRating, trailCheckPointID, personID):
+
+def insertWarning(selectedCheckpoints, grabbedUserIDsLength):
+    #ERROR HERE AND I CBA TO FIX IT RIGHT NOW ITS SAYING THAT THE LENGTHS ARENT AN INT FOR SOME REASON
+
+    randCheckpointID = int(len(selectedCheckpoints) * random.random())
+    randPersonID = int(grabbedUserIDsLength * random.random())
+    randWarningRating = int(5 * random.random())
+    randWarning = random.choice(open("warnings.txt","r").readline())
+
     with sqlite3.connect("hikeme_database.sqlite3") as conn:
         cur = conn.cursor()
-        query = f"INSERT INTO '{tableName}' (warning, warning_rating, trail_checkpoint_id, person_id) VALUES ('{warning}', '{warningRating}', '{trailCheckPointID}', '{personID}');"
+        query = f"INSERT INTO hikeme_app_warning (warning, warning_rating, trail_checkpoint_id, person_id) VALUES ('{randWarning}', '{randWarningRating}', '{selectedCheckpoints[randCheckpointID]}', '{randPersonID}');"
         cur.execute(query)
         conn.commit()
