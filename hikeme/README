@@ -1,0 +1,22 @@
+A web application that handles incoming data from a network of IoT devices that is utilised by users to track their progression on relevant hiking trails.
+
+Data regarding trail checkpoints and the status of users on their hike is sent to the SQL database where Python DJANGO is used to manage the data in the form of a scalable web application that can be used by hikers and authorities alike. 
+
+A simulated IoT network is created using a Python application where multiple instances can be used simultaneously to simulate the traffic of a large device network. Eventually, a prototype of the trail checkpoint location network will be built using real IoT devices.
+
+
+THOUGHTS/RANTS/JUSTIFICATION FOR BAD CODE:
+
+SQLite is a blessing and a curse.
+Lightweight but limited. Postgres would be much better but I wanted to be able to work on this project whenever, wherever with minimal setup.
+Using Python multi-processing, concurrent inserts have been implemented to simulate the traffic of a network of users interacting with a theoritical node network. 
+
+Tkinter.
+Really cool and powerful in the right situation. Can be (somewhat) nicely implemented using OOP principles however Python is known for having limited OOP capabilites. 
+Application UI structuring, specifically the option to use .pack or .grid and/or Frame, is flawed and can be fiddly but it was good practice. 
+
+Parallelization.
+As a challenge, I have tried to implement effective parallelization with multi-processing alongside caching. Thank you to the University of Surrey for not allowing me to take the relevant modules needed to learn this. More on this as I learn.
+
+
+

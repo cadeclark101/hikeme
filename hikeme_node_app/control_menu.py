@@ -1,11 +1,6 @@
-from cgitb import enable
 from tkinter import *
 from tkinter import ttk
-from tkinter import Listbox  
-from tkinter import messagebox
-from turtle import bgcolor, width 
-
-
+import database
 
 
 class ControlMenuWindow(Toplevel):
@@ -17,6 +12,8 @@ class ControlMenuWindow(Toplevel):
         self.geometry("500x400")
         self.resizable(False,False)
         self.title("Control Menu")
+
+        self.db, self.cur = database.connectToDB()
 
 
         self.selectedCheckpoints = self.mainapp.selectedCheckpoints
@@ -43,18 +40,25 @@ class ControlMenuWindow(Toplevel):
 
         self.menuItemsFrame = Frame(self)
         self.label2 = Label(self.menuItemsFrame, text= "POST NEW CHECK-INS").grid(row = 1, column=0, sticky=N, padx=20)
-        self.checkInNum = Entry(self.menuItemsFrame, width=5).grid(row = 1, column = 2, sticky=N, padx=20)
+        self.checkInNumEntry = Entry(self.menuItemsFrame, width=5)
+        self.checkInNumEntry.grid(row = 1, column = 2, sticky=N, padx=15)
 
         self.label3 = Label(self.menuItemsFrame, text= "POST NEW WARNINGS").grid(row = 2, column=0, sticky=N, padx=20)
-        self.warningNum = Entry(self.menuItemsFrame, width=5).grid(row = 2, column = 2, sticky=N, padx=20)
+        self.warningNumEntry = Entry(self.menuItemsFrame, width=5)
+        self.warningNumEntry.grid(row = 2, column = 2, sticky=N, padx=15)
 
-        self.goButton = Button(self.menuItemsFrame, text="GO").grid(row = 3, column=0, sticky=NW, padx=20)
-        self.stopButton = Button(self.menuItemsFrame, text="STOP").grid(row = 3, column=2, sticky=NE, padx=20)
+        self.goButton = Button(self.menuItemsFrame, text="GO", command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get())).grid(row = 3, column=0, sticky=NW, padx=20)
+        self.stopButton = Button(self.menuItemsFrame, text="STOP").grid(row = 3, column=2, sticky=NE, padx=15)
         
         self.menuItemsFrame.grid(row=0, column=0, sticky= NE)
 
-        self.outputFeedBox = Text(self, height=10, width=60).grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
+        self.outputFeedBox = Text(self, height=9, width=60).grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
+    def handleGoButton(self, checkinN, warningN):
+        grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
+        grabbedUserIDsLength = len(grabbedUserIDs)
+        if grabbedUserIDsLength < int(checkinN) or grabbedUserIDsLength < int(warningN):
+            self.label4 = Label(self.menuItemsFrame, text=("ONLY %s USER IDs EXIST" % grabbedUserIDsLength)).grid(row = 4, column=0, sticky=S, pady=60, columnspan=3)
 
         
 

@@ -33,7 +33,6 @@ class LoginWindow(Toplevel):
         self.passwordEntry.pack()
         
         self.submitButton=tkinter.Button(self, text="Submit", command=lambda: self.login(str(self.usernameEntry.get()), str(self.passwordEntry.get()))).pack()
-        #self.label1 = Label(self, text="Try logging into a DJANGO Superuser.").pack(side=BOTTOM)
 
 
 
