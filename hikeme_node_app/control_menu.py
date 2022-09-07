@@ -1,3 +1,5 @@
+import multiprocessing
+import threading
 from tkinter import *
 from tkinter import ttk
 import database
@@ -54,13 +56,32 @@ class ControlMenuWindow(Toplevel):
 
         self.outputFeedBox = Text(self, height=9, width=60).grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
+
+
+
     def handleGoButton(self, checkinN, warningN):
         grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
         grabbedUserIDsLength = len(grabbedUserIDs)
         if grabbedUserIDsLength < int(checkinN) or grabbedUserIDsLength < int(warningN):
             self.label4 = Label(self.menuItemsFrame, text=("ONLY %s USER IDs EXIST" % grabbedUserIDsLength)).grid(row = 4, column=0, sticky=S, pady=60, columnspan=3)
 
-        
+        if threading.activeCount() > 1:
+            pass #kill all threads
+
+
+    def createWarningInsertProcesses(self, n):
+        num_procs = n
+
+        print(f"Spawning {num_procs} processes")
+
+        pool = multiprocessing.Pool(num_procs)
+
+        results = pool.map(database.insertWarning(tableName, warning, warningRating, trailCheckPointID, personID), n)
+        # generate random warning, warning rating, personID for each insert
+        pool.close()
+        pool.join()
+
+        print(f"{num_procs} processes complete.")
 
 
     def loadInitTableElements(self):

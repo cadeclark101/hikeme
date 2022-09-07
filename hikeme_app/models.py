@@ -14,14 +14,6 @@ class Trail_Checkpoints(models.Model):
     on_delete=models.CASCADE
     )
     name = models.CharField(max_length=100) 
-    
-class Warning(models.Model):
-    trail_checkpoint = models.ForeignKey(
-    Trail_Checkpoints,
-    on_delete=models.CASCADE
-    )
-    warning = models.CharField(max_length=100)
-    warning_rating = models.IntegerField()
 
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
@@ -40,4 +32,16 @@ class Person(models.Model):
     auth_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+    )
+
+class Warning(models.Model):
+    trail_checkpoint = models.ForeignKey(
+    Trail_Checkpoints,
+    on_delete=models.CASCADE
+    )
+    warning = models.CharField(max_length=100)
+    warning_rating = models.IntegerField()
+    person = models.OneToOneField(
+        Person,
+        on_delete=models.CASCADE
     )

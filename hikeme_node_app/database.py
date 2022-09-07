@@ -1,3 +1,4 @@
+from functools import cache
 import re
 import sqlite3
 
@@ -43,3 +44,10 @@ def getNumPersonID(cur, n):
     cur.execute(query)
     result = cur.fetchall()
     return result
+
+def insertWarning(tableName, warning, warningRating, trailCheckPointID, personID):
+    with sqlite3.connect("hikeme_database.sqlite3") as conn:
+        cur = conn.cursor()
+        query = f"INSERT INTO '{tableName}' (warning, warning_rating, trail_checkpoint_id, person_id) VALUES ('{warning}', '{warningRating}', '{trailCheckPointID}', '{personID}');"
+        cur.execute(query)
+        conn.commit()
