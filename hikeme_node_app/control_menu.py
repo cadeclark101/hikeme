@@ -1,9 +1,9 @@
-from functools import partial
 import multiprocessing
-import threading
 from tkinter import *
 from tkinter import ttk
 import database
+import utils
+import cProfile
 
 
 class ControlMenuWindow(Toplevel):
@@ -65,20 +65,28 @@ class ControlMenuWindow(Toplevel):
     def handleGoButton(self, checkinN, warningN, processN):
         grabbedUserIDs = database.getNumPersonID(self.cur, warningN)
         grabbedUserIDsLength = len(grabbedUserIDs)
+
         if grabbedUserIDsLength < int(checkinN) or grabbedUserIDsLength < int(warningN):
             self.label4 = Label(self.menuItemsFrame, text=("ONLY %s USER IDs EXIST" % grabbedUserIDsLength)).grid(row = 4, column=0, sticky=S, pady=60, columnspan=3)
-        self.createWarningInsertProcesses(int(warningN), int(processN), grabbedUserIDs)
+        self.createWarningInsertProcesses(int(warningN), int(processN), grabbedUserIDsLength)
 
 
-    def createWarningInsertProcesses(self, warningN, processN, grabbedUserIDs):
+    def createWarningInsertProcesses(self, warningN, processN, grabbedUserIDsLength):
         async_results = []
+        warningFile = utils.loadFile("warnings.txt", "r")
+
+        profile = cProfile.Profile()
+        profile.enable()
+
         with multiprocessing.Pool(processes=processN) as pool:
             for _ in range(warningN):
-                async_results.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, len(grabbedUserIDs))))
+                async_results.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
         pool.close()
         pool.join()
- 
 
+        profile.disable()
+        profile.print_stats(sort='tottime')
+ 
 
 
     def loadInitTableElements(self):

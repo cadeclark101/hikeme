@@ -5,7 +5,6 @@ from PIL import Image, ImageTk
 import login
 import control_menu
 import os
-import database
 
 
 
