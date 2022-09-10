@@ -1,5 +1,6 @@
 from random import randrange
 
+#Reservoir pooling - BROKEN?
 def getRandomWarning(warningFile, default=None):
     line = default
     for i, aline in enumerate(warningFile, start=1):
