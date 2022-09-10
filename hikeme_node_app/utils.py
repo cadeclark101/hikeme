@@ -1,13 +1,5 @@
-from random import randrange
+import random
 
-#Reservoir pooling - BROKEN?
-def getRandomWarning(warningFile, default=None):
-    line = default
-    for i, aline in enumerate(warningFile, start=1):
-        if randrange(i) == 0:
-            line = aline
-    return line
-
-def loadFile(fileName, mode):
-    file = open(fileName, mode)
+def loadFile(fileName):
+    file = open(fileName).read().splitlines()
     return file

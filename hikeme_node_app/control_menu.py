@@ -1,9 +1,10 @@
+from distutils.log import warn
 import multiprocessing
 from tkinter import *
 from tkinter import ttk
 import database
 import utils
-import cProfile
+import time
 
 
 class ControlMenuWindow(Toplevel):
@@ -66,19 +67,25 @@ class ControlMenuWindow(Toplevel):
         self.stopButton = Button(self, text="STOP").grid(row = 3, column=0, sticky=SE, padx=5)
 
 
+
+
     def handleGoButton(self, checkinN, warningN, processN):
-        grabbedUserIDs = database.getNumPersonID(self.cur, warningN)
+        if warningN <= checkinN:
+            grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
+        else:
+            grabbedUserIDs = database.getNumPersonID(self.cur, warningN)
+            
         grabbedUserIDsLength = len(grabbedUserIDs)
 
         if grabbedUserIDsLength < int(checkinN) or grabbedUserIDsLength < int(warningN):
-            self.outputFeedBox.insert(END, ("ONLY %s USER IDs EXIST\n" % grabbedUserIDsLength))
-            self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
+            self.updateTextBox(("ONLY %s USER IDs EXIST\n" % grabbedUserIDsLength))
         
         if self.checkSelectedCheckPointIsEmpty():
-            self.outputFeedBox.insert(END, ("NO CHECKPOINT(S) SELECTED!\n"))
-            self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
+            self.updateTextBox(("NO CHECKPOINT(S) SELECTED!\n"))
         else:
-            self.createWarningInsertProcesses(int(warningN), int(processN), grabbedUserIDsLength)
+            self.createInsertProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+
+
 
     def checkSelectedCheckPointIsEmpty(self):
         if self.selectedCheckpoints is None or len(self.selectedCheckpoints) == 0:
@@ -86,22 +93,30 @@ class ControlMenuWindow(Toplevel):
         else:
             return False
 
-    def createWarningInsertProcesses(self, warningN, processN, grabbedUserIDsLength):
-        # add X warnings per N checkpoints spread over B processes
-        async_results = []
-        warningFile = utils.loadFile("warnings.txt", "r")
 
-        self.profile = cProfile.Profile()
-        self.profile.enable()
+
+    def updateTextBox(self, text):
+        self.outputFeedBox.insert(END, text)
+        self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
+
+
+
+    def createInsertProcesses(self, warningN, checkinN, processN, grabbedUserIDsLength):
+        # add X warnings per N checkpoints spread over B processes
+        async_results_warnings = []
+        async_results_check_ins = []
+
+        warningFile = utils.loadFile("warnings.txt")
+
+        start = time.process_time()
 
         with multiprocessing.Pool(processes=processN) as pool:
             for _ in range(warningN):
-                async_results.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
-        pool.close()
-        pool.join()
+                async_results_warnings.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
 
-        self.profile.disable()
-        self.profile.print_stats(sort='tottime')
+        timeTaken = (time.process_time() - start)
+        self.updateTextBox(("TIME TAKEN: %s seconds \n" % timeTaken))
+        
  
 
 

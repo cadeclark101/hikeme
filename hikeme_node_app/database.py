@@ -45,11 +45,13 @@ def getNumPersonID(cur, n):
     result = cur.fetchall()
     return result
 
+
+
 def insertWarning(selectedCheckpoints, grabbedUserIDsLength, warningFile):
     randCheckpointID = int(len(selectedCheckpoints) * random.random())
     randPersonID = int(grabbedUserIDsLength * random.random())
     randWarningRating = int(5 * random.random())
-    randWarning = utils.getRandomWarning(warningFile)
+    randWarning = random.choice(warningFile)
 
     with sqlite3.connect("hikeme_database.sqlite3") as conn:
         cur = conn.cursor()
@@ -57,3 +59,15 @@ def insertWarning(selectedCheckpoints, grabbedUserIDsLength, warningFile):
         cur.execute(query)
         conn.commit()
 
+
+
+def insertCheckIn(selectedCheckpoints, grabbedUserIDsLength):
+    # randStatus = int(3 * random.random()) CHANGE TO RANDOM SELECTION FROM TEXT FILE AND ADD IT TO DB AND SET THE ID OF ADDED STATUS TO PERSON
+    randCheckpointID = int(len(selectedCheckpoints) * random.random())
+    randPersonID = int(grabbedUserIDsLength * random.random())
+
+    with sqlite3.connect("hikeme_database.sqlite3") as conn:
+        cur = conn.cursor()
+        query = f"UPDATE hikeme_app_person SET (current_status_id = '{randStatusID}', current_trail_checkpoint_id = '{selectedCheckpoints[randCheckpointID]}') WHERE person_id = '{randPersonID};"
+        cur.execute(query)
+        conn.commit()
