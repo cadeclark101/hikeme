@@ -83,7 +83,7 @@ class ControlMenuWindow(Toplevel):
         if self.checkSelectedCheckPointIsEmpty():
             self.updateTextBox(("NO CHECKPOINT(S) SELECTED!\n"))
         else:
-            self.createInsertProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+            self.createProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
 
 
 
@@ -101,12 +101,13 @@ class ControlMenuWindow(Toplevel):
 
 
 
-    def createInsertProcesses(self, warningN, checkinN, processN, grabbedUserIDsLength):
+    def createProcesses(self, warningN, checkinN, processN, grabbedUserIDsLength):
         # add X warnings per N checkpoints spread over B processes
         async_results_warnings = []
         async_results_check_ins = []
 
         warningFile = utils.loadFile("warnings.txt")
+        statusFile = utils.loadFile("statuses.txt")
 
         start = time.process_time()
 
@@ -115,9 +116,21 @@ class ControlMenuWindow(Toplevel):
                 async_results_warnings.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
 
         timeTaken = (time.process_time() - start)
-        self.updateTextBox(("TIME TAKEN: %s seconds \n" % timeTaken))
+        self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to INSERT {warningN} warnings.\n"))
         
- 
+        
+        
+        
+        #CREATE SEPERATE FUNCTION?
+        start = time.process_time()
+
+        with multiprocessing.Pool(processes=processN) as pool:
+            for _ in range(checkinN):
+                async_results_check_ins.append(pool.apply_async(database.insertCheckIn(self.selectedCheckpoints, grabbedUserIDsLength, statusFile)))
+                
+        timeTaken = (time.process_time() - start)
+        self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to CREATE and UPDATE {checkinN} user statuses.\n"))
+        
 
 
     def loadInitTableElements(self):

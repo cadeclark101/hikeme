@@ -61,13 +61,20 @@ def insertWarning(selectedCheckpoints, grabbedUserIDsLength, warningFile):
 
 
 
-def insertCheckIn(selectedCheckpoints, grabbedUserIDsLength):
-    # randStatus = int(3 * random.random()) CHANGE TO RANDOM SELECTION FROM TEXT FILE AND ADD IT TO DB AND SET THE ID OF ADDED STATUS TO PERSON
+def insertCheckIn(selectedCheckpoints, grabbedUserIDsLength, statusFile):
     randCheckpointID = int(len(selectedCheckpoints) * random.random())
     randPersonID = int(grabbedUserIDsLength * random.random())
+    randStatus = random.choice(statusFile)
 
     with sqlite3.connect("hikeme_database.sqlite3") as conn:
         cur = conn.cursor()
-        query = f"UPDATE hikeme_app_person SET (current_status_id = '{randStatusID}', current_trail_checkpoint_id = '{selectedCheckpoints[randCheckpointID]}') WHERE person_id = '{randPersonID};"
-        cur.execute(query)
+        query1 = f"INSERT INTO hikeme_app_status (status) VALUES ('{randStatus}');"
+        cur.execute(query1)
+        conn.commit()
+        
+        lastRowID = cur.lastrowid
+        print(lastRowID)
+
+        query2 = f"UPDATE hikeme_app_person SET (current_status_id, current_trail_checkpoint_id) VALUES ('{lastRowID}', '{selectedCheckpoints[randCheckpointID]}') WHERE person_id = '{randPersonID}';"
+        cur.execute(query2)
         conn.commit()
