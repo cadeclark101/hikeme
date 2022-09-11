@@ -21,6 +21,7 @@ class ControlMenuWindow(Toplevel):
 
 
         self.selectedCheckpoints = self.mainapp.selectedCheckpoints
+        self.goUntilStoppedState = IntVar()
 
         if self.master.currentUser.is_superuser:
             self.loadInitUI()
@@ -42,7 +43,7 @@ class ControlMenuWindow(Toplevel):
         self.t_scroll.grid(row=0, column=0, sticky=NS, padx = 50)
         self.listboxFrame.grid(row=0, column=0, columnspan=1, sticky = NW)
 
-        self.goUntilStoppedChk = Checkbutton(self, text='GO UNTIL STOPPED', onvalue=1, offvalue=0)
+        self.goUntilStoppedChk = Checkbutton(self, text='GO UNTIL STOPPED', variable=self.goUntilStoppedState)
         self.goUntilStoppedChk.grid(row = 1, column=0, sticky=NW)
 
         self.menuItemsFrame = Frame(self)
@@ -64,12 +65,13 @@ class ControlMenuWindow(Toplevel):
         self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
         self.goButton = Button(self, text="GO", command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get(), self.processNumEntry.get())).grid(row = 3, column=0, sticky=SW, padx=5)
-        self.stopButton = Button(self, text="STOP").grid(row = 3, column=0, sticky=SE, padx=5)
+        self.stopButton = Button(self, text="STOP", command=self.handleStopButton).grid(row = 3, column=0, sticky=SE, padx=5)
 
 
 
 
     def handleGoButton(self, checkinN, warningN, processN):
+        print(self.goUntilStoppedState.get())
         if warningN <= checkinN:
             grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
         else:
@@ -83,7 +85,43 @@ class ControlMenuWindow(Toplevel):
         if self.checkSelectedCheckPointIsEmpty():
             self.updateTextBox(("NO CHECKPOINT(S) SELECTED!\n"))
         else:
-            self.createProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+            if self.goUntilStoppedState.get() == 1:
+                self.goUntilStopped(checkinN, warningN, processN, grabbedUserIDsLength)
+            else:
+                self.createProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+
+
+    def createProcesses(self, warningN, checkInN, processN, grabbedUserIDsLength):
+            # add X warnings per N checkpoints spread over B processes
+            async_results_warnings = []
+            async_results_check_ins = []
+
+            warningFile = utils.loadFile("warnings.txt")
+            statusFile = utils.loadFile("statuses.txt")
+
+            start = time.process_time()
+            if warningN is not None or warningN != 0:
+                with multiprocessing.Pool(processes=processN) as pool:
+                    for _ in range(warningN):
+                        async_results_warnings.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
+            timeTaken = (time.process_time() - start)
+            self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to INSERT {warningN} warnings.\n"))
+
+            start = time.process_time()
+            if checkInN is not None or checkInN != 0: 
+                with multiprocessing.Pool(processes=processN) as pool:
+                    for _ in range(checkInN):
+                        async_results_check_ins.append(pool.apply_async(database.insertCheckIn(self.selectedCheckpoints, grabbedUserIDsLength, statusFile)))
+            timeTaken = (time.process_time() - start)
+            self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to CREATE and UPDATE {checkInN} user statuses.\n"))
+            
+
+
+    def goUntilStopped(self, warningN, checkInN, processN, grabbedUserIDsLength):
+        self.updateTextBox((f"INSERTING {warningN} warnings and CREATING/UPDATING {checkInN} user statuses every second in PARALELL over {processN} processes.\nATTENTION: THIS FEATURE CAN AND WILL CRASH THE APP - CONSDIER LOWERING THE DESIRED PROCESS/WARNING/CHECK-IN COUNT\n"))
+        while self.goUntilStoppedState.get() == 1:
+            self.createProcesses(int(warningN), int(checkInN), int(processN), grabbedUserIDsLength)
+            time.sleep(600)
 
 
 
@@ -94,49 +132,31 @@ class ControlMenuWindow(Toplevel):
             return False
 
 
-
     def updateTextBox(self, text):
         self.outputFeedBox.insert(END, text)
         self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
 
-
-    def createProcesses(self, warningN, checkinN, processN, grabbedUserIDsLength):
-        # add X warnings per N checkpoints spread over B processes
-        async_results_warnings = []
-        async_results_check_ins = []
-
-        warningFile = utils.loadFile("warnings.txt")
-        statusFile = utils.loadFile("statuses.txt")
-
-        start = time.process_time()
-
-        with multiprocessing.Pool(processes=processN) as pool:
-            for _ in range(warningN):
-                async_results_warnings.append(pool.apply_async(database.insertWarning(self.selectedCheckpoints, grabbedUserIDsLength, warningFile)))
-
-        timeTaken = (time.process_time() - start)
-        self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to INSERT {warningN} warnings.\n"))
-        
-        
-        
-        
-        #CREATE SEPERATE FUNCTION?
-        start = time.process_time()
-
-        with multiprocessing.Pool(processes=processN) as pool:
-            for _ in range(checkinN):
-                async_results_check_ins.append(pool.apply_async(database.insertCheckIn(self.selectedCheckpoints, grabbedUserIDsLength, statusFile)))
-                
-        timeTaken = (time.process_time() - start)
-        self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to CREATE and UPDATE {checkinN} user statuses.\n"))
-        
+    def handleAddButton(self):
+        # allow superuser to update just one particular user status and warning using 1 checkpoint
+        # get all user ID's in drop down (with search?)
+        # click on one selected checkpoint in treeview
+        # type in a warning
+        # type in a status
+        # insert warning and status for selected person ID
+        # update person status ID and current checkpoint
+        pass
 
 
     def loadInitTableElements(self):
         if self.selectedCheckpoints is not None:
             for i in self.selectedCheckpoints:
                 self.t_table.insert('', 'end', i, values=i)
+
+
+
+    def handleStopButton(self):
+        self.goUntilStoppedState = 0
 
 
 

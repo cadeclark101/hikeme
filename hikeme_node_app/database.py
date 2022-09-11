@@ -73,8 +73,8 @@ def insertCheckIn(selectedCheckpoints, grabbedUserIDsLength, statusFile):
         conn.commit()
         
         lastRowID = cur.lastrowid
-        print(lastRowID)
 
-        query2 = f"UPDATE hikeme_app_person SET (current_status_id, current_trail_checkpoint_id) VALUES ('{lastRowID}', '{selectedCheckpoints[randCheckpointID]}') WHERE person_id = '{randPersonID}';"
-        cur.execute(query2)
+        cur.execute("UPDATE hikeme_app_person SET current_status_id = ?, current_trail_checkpoint_id = ? WHERE id = ?", (lastRowID, selectedCheckpoints[randCheckpointID], randPersonID))
         conn.commit()
+
+        # problem is its only selecting "0" as the random person ID. not enough users? issue with random?
