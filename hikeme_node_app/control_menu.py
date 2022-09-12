@@ -13,7 +13,7 @@ class ControlMenuWindow(Toplevel):
         self.mainapp = mainapp
         self.protocol("WM_DELETE_WINDOW", self.onClose)
 
-        self.geometry("500x450")
+        self.geometry("500x475")
         self.resizable(False,False)
         self.title("Control Menu")
 
@@ -21,7 +21,6 @@ class ControlMenuWindow(Toplevel):
 
 
         self.selectedCheckpoints = self.mainapp.selectedCheckpoints
-        self.goUntilStoppedState = IntVar()
 
         if self.master.currentUser.is_superuser:
             self.loadInitUI()
@@ -38,20 +37,20 @@ class ControlMenuWindow(Toplevel):
         
         self.loadInitTableElements()
 
-        self.t_table.heading("checkpointIDcol", text="Checkpoint ID")
+        self.t_table.heading("checkpointIDcol", text="CHECKPOINT ID")
         self.t_table.grid(row = 0, column = 0, sticky = NSEW, padx = 5, pady = 5)
         self.t_scroll.grid(row=0, column=0, sticky=NS, padx = 50)
         self.listboxFrame.grid(row=0, column=0, columnspan=1, sticky = NW)
 
-        self.goUntilStoppedChk = Checkbutton(self, text='GO UNTIL STOPPED', variable=self.goUntilStoppedState)
-        self.goUntilStoppedChk.grid(row = 1, column=0, sticky=NW)
+        self.removeButton = Button(self, text="REMOVE", command=self.handleRemoveButton).grid(row = 1, column = 0, sticky=SW, padx=5)
+        self.clearButton = Button(self, text="CLEAR", command=self.handleClearButton).grid(row = 1, column = 0, sticky=SW, padx=160)
 
         self.menuItemsFrame = Frame(self)
-        self.label2 = Label(self.menuItemsFrame, text= "POST  x  CHECK-INS PER\nCHECKPOINT").grid(row = 1, column=0, sticky=N)
+        self.label2 = Label(self.menuItemsFrame, text= "POST  x  CHECK-INS per\nCHECKPOINT").grid(row = 1, column=0, sticky=N)
         self.checkInNumEntry = Entry(self.menuItemsFrame, width=5)
         self.checkInNumEntry.grid(row = 1, column = 2, sticky=N, padx=5, pady=5)
 
-        self.label3 = Label(self.menuItemsFrame, text= "POST  x  WARNINGS PER\nCHECKPOINT").grid(row = 2, column=0, sticky=N)
+        self.label3 = Label(self.menuItemsFrame, text= "POST  x  WARNINGS per\nCHECKPOINT").grid(row = 2, column=0, sticky=N)
         self.warningNumEntry = Entry(self.menuItemsFrame, width=5)
         self.warningNumEntry.grid(row = 2, column = 2, sticky=N, padx=5, pady=5)
 
@@ -64,14 +63,29 @@ class ControlMenuWindow(Toplevel):
         self.outputFeedBox = Text(self, height=9, width=60)
         self.outputFeedBox.grid(row = 2, column = 0, columnspan=1, sticky = S, padx = 5, pady=5)
 
-        self.goButton = Button(self, text="GO", command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get(), self.processNumEntry.get())).grid(row = 3, column=0, sticky=SW, padx=5)
-        self.stopButton = Button(self, text="STOP", command=self.handleStopButton).grid(row = 3, column=0, sticky=SE, padx=5)
+        self.goButton = Button(self, text="GO", width=50, command=lambda: self.handleGoButton(self.checkInNumEntry.get(), self.warningNumEntry.get(), self.processNumEntry.get())).grid(row = 3, column=0, sticky=S, padx=5)
 
+
+
+    def handleRemoveButton(self):
+        getTreeview = self.t_table.focus()
+        treeviewSelectedItem = self.t_table.item(getTreeview)
+        treeviewSelectedItemValue = treeviewSelectedItem.get('values')[0]
+        print(treeviewSelectedItemValue)
+        print(self.selectedCheckpoints)
+        self.selectedCheckpoints.remove(str(treeviewSelectedItemValue))
+        self.t_table.delete(self.t_table.selection()) 
+
+
+
+    def handleClearButton(self):
+        self.selectedCheckpoints = []
+        self.mainapp.selectedCheckpoints = []
+        self.t_table.delete(*self.t_table.get_children())
 
 
 
     def handleGoButton(self, checkinN, warningN, processN):
-        print(self.goUntilStoppedState.get())
         if warningN <= checkinN:
             grabbedUserIDs = database.getNumPersonID(self.cur, checkinN)
         else:
@@ -85,10 +99,9 @@ class ControlMenuWindow(Toplevel):
         if self.checkSelectedCheckPointIsEmpty():
             self.updateTextBox(("NO CHECKPOINT(S) SELECTED!\n"))
         else:
-            if self.goUntilStoppedState.get() == 1:
-                self.goUntilStopped(checkinN, warningN, processN, grabbedUserIDsLength)
-            else:
-                self.createProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+            self.createProcesses(int(warningN), int(checkinN), int(processN), grabbedUserIDsLength)
+
+                
 
 
     def createProcesses(self, warningN, checkInN, processN, grabbedUserIDsLength):
@@ -114,14 +127,6 @@ class ControlMenuWindow(Toplevel):
                         async_results_check_ins.append(pool.apply_async(database.insertCheckIn(self.selectedCheckpoints, grabbedUserIDsLength, statusFile)))
             timeTaken = (time.process_time() - start)
             self.updateTextBox((f"TIME TAKEN: {timeTaken} seconds to CREATE and UPDATE {checkInN} user statuses.\n"))
-            
-
-
-    def goUntilStopped(self, warningN, checkInN, processN, grabbedUserIDsLength):
-        self.updateTextBox((f"INSERTING {warningN} warnings and CREATING/UPDATING {checkInN} user statuses every second in PARALELL over {processN} processes.\nATTENTION: THIS FEATURE CAN AND WILL CRASH THE APP - CONSDIER LOWERING THE DESIRED PROCESS/WARNING/CHECK-IN COUNT\n"))
-        while self.goUntilStoppedState.get() == 1:
-            self.createProcesses(int(warningN), int(checkInN), int(processN), grabbedUserIDsLength)
-            time.sleep(600)
 
 
 
@@ -153,10 +158,6 @@ class ControlMenuWindow(Toplevel):
             for i in self.selectedCheckpoints:
                 self.t_table.insert('', 'end', i, values=i)
 
-
-
-    def handleStopButton(self):
-        self.goUntilStoppedState = 0
 
 
 

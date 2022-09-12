@@ -49,7 +49,10 @@ def getNumPersonID(cur, n):
 
 def insertWarning(selectedCheckpoints, grabbedUserIDsLength, warningFile):
     randCheckpointID = int(len(selectedCheckpoints) * random.random())
-    randPersonID = int(grabbedUserIDsLength * random.random())
+    if grabbedUserIDsLength != 1:
+        randPersonID = int(grabbedUserIDsLength * random.random())
+    else:
+        randPersonID = 1
     randWarningRating = int(5 * random.random())
     randWarning = random.choice(warningFile)
 
@@ -63,7 +66,10 @@ def insertWarning(selectedCheckpoints, grabbedUserIDsLength, warningFile):
 
 def insertCheckIn(selectedCheckpoints, grabbedUserIDsLength, statusFile):
     randCheckpointID = int(len(selectedCheckpoints) * random.random())
-    randPersonID = int(grabbedUserIDsLength * random.random())
+    if grabbedUserIDsLength != 1:
+        randPersonID = int(grabbedUserIDsLength * random.random())
+    else:
+        randPersonID = 1
     randStatus = random.choice(statusFile)
 
     with sqlite3.connect("hikeme_database.sqlite3") as conn:
