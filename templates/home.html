@@ -3,7 +3,12 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+    <p>{{ current_person.first_name }}</p>
+    <p>{{ current_trail.name }}</p>  
+    <p>{{ current_trail_checkpoint.name }}</p>  
+
 {% if user.is_authenticated %}
+
     User: {{ user.username }} is logged in.
     <p><a href="{% url 'logout' %} ">Log Out.</a></p>
 {% else %}

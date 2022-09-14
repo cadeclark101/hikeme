@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'hikeme.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'hikeme_database.sqlite3',
+        'NAME': BASE_DIR / "hikeme_database.sqlite3",
     }
 }
 
