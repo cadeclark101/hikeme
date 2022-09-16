@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from django.conf import settings
 
@@ -57,6 +58,10 @@ class CheckIn(models.Model):
     
 
 class Warning(models.Model):
+    trail = models.ForeignKey(
+    Trail,
+    on_delete=models.CASCADE
+    )
     trail_checkpoint = models.ManyToManyField(
     Trail_Checkpoint,
     )

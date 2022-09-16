@@ -17,7 +17,7 @@ class Home(View):
             self.current_person = get_object_or_404(Person, auth_user_id = self.current_user.id)
 
             return render(request=request, template_name="home.html", 
-            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail(), "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint(), "all_trails":self.getAllTrails()})
+            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail(), "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint(), "all_trails":self.getAllTrails(), "all_warnings":self.getWarnings()})
         else:
             return redirect("/accounts/login")
 
@@ -38,7 +38,16 @@ class Home(View):
         news_current_trail = get_object_or_404(News, relevant_trail = self.current_person.current_trail_id)
         return news_current_checkpoint, news_current_trail
 
+    def getWarnings(self):
+        all_warnings = get_object_or_404(Warning, trail = self.current_person.current_trail_id)
+        return all_warnings
 
+    def getWarningCounts(self):
+        all_warnings = self.getWarnings()
+        high_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(4,5))
+        medium_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(2,3))
+        low_risk_count = sum(1 for warning in all_warnings if warning.warning_rating == 1)
+        return high_risk_count, medium_risk_count, low_risk_count
 
 
 

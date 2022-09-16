@@ -2,9 +2,57 @@
 
 {% block title %}HikeMe{% endblock %}
 
-{% block content %}
-    <p>{{ current_person.first_name }}</p>
-    <p>{{ current_trail.name }}</p>  
-    <p>{{ current_trail_checkpoint.name }}</p>  
+{% block content %} 
+    <div class="container-fluid mt-n3">
+        <div class="row container-fluid">
+            <div class="col">
+                <div class="row py-1">
+                    <p class="px-2"><h1>{{ current_trail.name }} -
+                        <small class="text-muted">{{ current_trail_checkpoint.name }}</small>
+                    </h1></p>
+                </div>
+
+                <div class="row container-fluid">
+                    <div class="col border-right">
+                        <ul class="list-group py-3">
+                            <li class="list-group-item list-group-item-danger font-weight-bold">HIGH RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
+                            <li class="list-group-item list-group-item-warning font-weight-bold">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
+                            <li class="list-group-item list-group-item-success font-weight-bold">LOW RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <div class="card-body">
+                            <p class="card-text">DIFFICULTY RATING<br>TRAIL LENGTH<br>CONTACT</p>
+                            <a href="#" class="btn btn-primary">View Trail</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row py-4 container-fluid">
+                    <div class="col border-right border-left">
+                        <button type="button" class="btn btn-outline-danger float-left">New Warning</button>
+                    </div>
+                    <div class="col border-right border-left text-center">
+                        <button type="button" class="btn btn-outline-success">New Status</button>
+                    </div>
+                    <div class="col border-right border-left">
+                        <button type="button" class="btn btn-outline-info float-right">New Hike</button>
+                    </div>
+                </div>
+
+                <div class="row py-4 container-fluid">
+                    STATUS FEED FOR TRAIL
+                </div>
+            </div>
+
+
+            <div class="col border">
+                Map
+            </div>
+            <div class="col border">
+                News
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
