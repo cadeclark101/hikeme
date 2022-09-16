@@ -15,9 +15,9 @@
                 <div class="row container-fluid">
                     <div class="col border-right">
                         <ul class="list-group py-3">
-                            <li class="list-group-item list-group-item-danger font-weight-bold float-left">HIGH RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
-                            <li class="list-group-item list-group-item-warning font-weight-bold float-left">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
-                            <li class="list-group-item list-group-item-success font-weight-bold float-left">LOW RISK<span class="badge badge-primary badge-pill float-right">x</span></li>
+                            <li class="list-group-item list-group-item-danger font-weight-bold float-left">HIGH RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.0 }}</span></li>
+                            <li class="list-group-item list-group-item-warning font-weight-bold float-left">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.1 }}</span></li>
+                            <li class="list-group-item list-group-item-success font-weight-bold float-left">LOW RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.2 }}</span></li>
                         </ul>
                     </div>
                     <div class="col">
@@ -42,14 +42,14 @@
 
                 <div class="row py-4 container-fluid border">
                     <div class="col border-right text-center">
-                        <span class="h3">last check-in</span>
+                        <span class="h3">{{ current_trail_checkpoint.name }}</span>
                         <br>
-                        <small class="text-muted">datetime</small>
+                        <small class="text-muted">{{ last_check_in.datetime_of_checkin }}</small>
                     </div>
                     <div class="col border-left text-center">
-                        <span class="h3">next check-in</span>
+                        <span class="h3">{{ next_checkpoint.name }}</span>
                         <br>
-                        <small class="text-muted">current time</small>
+                        <small class="text-muted">{% now "jS F Y H:i" %}</small>
                     </div>
                 </div>
 
@@ -67,7 +67,7 @@
 
                 <div class="row py-4 container-fluid">
                     <div class="col border-right border-left text-center">
-                        LEADERBOARD
+                        statuses
                     </div>
                 </div>
             </div>

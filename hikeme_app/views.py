@@ -17,7 +17,7 @@ class Home(View):
             self.current_person = get_object_or_404(Person, auth_user_id = self.current_user.id)
 
             return render(request=request, template_name="home.html", 
-            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail(), "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint(), "all_trails":self.getAllTrails(), "all_warnings":self.getWarnings()})
+            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail, "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint, "all_trails":self.getAllTrails, "all_warnings":self.getWarnings, "all_check_ins":self.getAllCheckIns, "last_check_in":self.getLastUserCheckIn, "risk_counts":self.getWarningCounts, "next_checkpoint":self.getNextCheckPoint})
         else:
             return redirect("/accounts/login")
 
@@ -39,15 +39,30 @@ class Home(View):
         return news_current_checkpoint, news_current_trail
 
     def getWarnings(self):
-        all_warnings = get_object_or_404(Warning, trail = self.current_person.current_trail_id)
+        all_warnings = Warning.objects.filter(person = self.current_person.id)
         return all_warnings
 
     def getWarningCounts(self):
         all_warnings = self.getWarnings()
-        high_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(4,5))
-        medium_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(2,3))
-        low_risk_count = sum(1 for warning in all_warnings if warning.warning_rating == 1)
+        high_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(4,6))
+        medium_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(3,4))
+        low_risk_count = sum(1 for warning in all_warnings if warning.warning_rating in range(1,3))
         return high_risk_count, medium_risk_count, low_risk_count
+
+    def getAllCheckIns(self):
+        all_check_ins = CheckIn.objects.filter(person = self.current_person.id)
+        return all_check_ins
+
+    def getLastUserCheckIn(self):
+        last_check_in = CheckIn.objects.filter(person = self.current_person.id).last()
+        return last_check_in
+
+    def getNextCheckPoint(self):
+        all_checkpoints_for_trail = Trail_Checkpoint.objects.filter(trail = self.current_person.current_trail)
+        for i in all_checkpoints_for_trail:
+            if (self.current_person.current_trail_checkpoint.id + 1) == i.id:
+                next_checkpoint = Trail_Checkpoint.objects.filter(id = (self.current_person.current_trail_checkpoint.id + 1))
+                return next_checkpoint[0]
 
 
 
