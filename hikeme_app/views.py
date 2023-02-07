@@ -64,6 +64,9 @@ class Home(View):
                 next_checkpoint = Trail_Checkpoint.objects.filter(id = (self.current_person.current_trail_checkpoint.id + 1))
                 return next_checkpoint[0]
 
+    def getRelevantStatuses(self):
+        pass
+
 
 
 def register_request(request):

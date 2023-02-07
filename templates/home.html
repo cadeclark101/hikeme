@@ -42,11 +42,13 @@
 
                 <div class="row py-4 container-fluid border">
                     <div class="col border-right text-center">
+                        <div class="font-weight-bold font-italic">LAST CHECKPOINT</div>
                         <span class="h3">{{ current_trail_checkpoint.name }}</span>
                         <br>
                         <small class="text-muted">{{ last_check_in.datetime_of_checkin }}</small>
                     </div>
                     <div class="col border-left text-center">
+                        <div class="font-weight-bold font-italic">NEXT CHECKPOINT</div>
                         <span class="h3">{{ next_checkpoint.name }}</span>
                         <br>
                         <small class="text-muted">{% now "jS F Y H:i" %}</small>
