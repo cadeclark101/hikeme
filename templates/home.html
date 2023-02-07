@@ -18,6 +18,8 @@
                             <li class="list-group-item list-group-item-danger font-weight-bold float-left">HIGH RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.0 }}</span></li>
                             <li class="list-group-item list-group-item-warning font-weight-bold float-left">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.1 }}</span></li>
                             <li class="list-group-item list-group-item-success font-weight-bold float-left">LOW RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.2 }}</span></li>
+                            <br>
+                            <button type="button" class="btn btn-outline-danger float-left">New Warning</button>
                         </ul>
                     </div>
                     <div class="col">
@@ -28,17 +30,7 @@
                     </div>
                 </div>
 
-                <div class="row py-4 container-fluid">
-                    <div class="col border-right border-left">
-                        <button type="button" class="btn btn-outline-danger float-left">New Warning</button>
-                    </div>
-                    <div class="col border-right border-left text-center">
-                        <button type="button" class="btn btn-outline-success">New Status</button>
-                    </div>
-                    <div class="col border-right border-left">
-                        <button type="button" class="btn btn-outline-info float-right">New Hike</button>
-                    </div>
-                </div>
+                <br>
 
                 <div class="row py-4 container-fluid border">
                     <div class="col border-right text-center">
@@ -56,27 +48,22 @@
                 </div>
 
                 <div class="row py-4 container-fluid">
-                    <div class="col border-right text-center">
-                        AVERAGE SPEED
-                    </div>
-                    <div class="col border-right text-center">
-                        TIME STARTED
-                    </div>
-                    <div class="col  text-center">
-                        DISTANCE TRAVELLED
-                    </div>
-                </div>
-
-                <div class="row py-4 container-fluid">
                     <div class="col border-right border-left text-center">
-                        statuses
+                        <input class="form-control form-control-lg" type="text" placeholder="Status title:">
+                        <br>
+                        <input class="form-control" type="text" placeholder="Write your new status here!">
+                        <br>
+                        <button type="submit" class="btn btn-primary">POST STATUS</button>
                     </div>
                 </div>
             </div>
 
 
             <div class="col border">
-                Map
+                <div class="basic">
+                    <br>
+                    {% include "warning.html" %}    
+                </div>
             </div>
             <div class="col border">
                 News
