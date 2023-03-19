@@ -7,33 +7,35 @@
         <h2>NEW WARNING</h2>
         <BR>
         <div class="col border-right border-left text-center">
-            <input class="form-control" type="text" placeholder="WARNING LOCATION.">
-            <br>
-            <input class="form-control" type="text" placeholder="WARNING DETAILS.">
-            <br>
-            WARNING SEVERITY:
-            <select class="form-control form-control-sm">
-                <option>LOW</option>
-                <option>MEDIUM</option>
-                <option>HIGH</option>
-            </select>
-            <br>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                  <p class="text-danger">STAFF ATTENTION REQUIRED</p>
-                </label>
-              </div>
-            <button type="submit" class="btn btn-primary">SUBMIT WARNING</button>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h5>Tell us about the issue:</h5>
+                <input class="form-control" name="warning_details" type="text" placeholder="WARNING DETAILS."> <!-- warning details -->
+                <br>
+
+                <h5>Please rank the severity of the issue:</h5>
+                <select name="warning_rating" class="form-control form-control-sm"> <!-- warning rating -->
+                    <option>LOW</option>
+                    <option>MEDIUM</option>
+                    <option>HIGH</option>
+                </select>
+                <br>
+                <div class="form-check">
+                    <input name="staff_required" class="form-check-input" type="checkbox" id="defaultCheck1"> <!-- warning staff look -->
+                    <label class="form-check-label" for="defaultCheck1">
+                    <p class="text-danger">STAFF ATTENTION REQUIRED</p>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">SUBMIT WARNING</button>
+            </form>
+
+            <div class="col position-absolute text-center">
+                <h6 class="bg-warning text-wrap m-4 p-2">ALL WARNINGS ARE SUBJECT TO STAFF REVIEW UPON REQUEST AND MAY NOT BE ACCURATE.</h6>
+            </div>
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
         
-        <div class="col position-absolute text-center">
-            <P>ALL WARNINGS ARE SUBJECT TO STAFF REVIEW UPON REQUEST AND MAY NOT BE ACCURATE.</P>
-        </div>
+        
+        
     </div>
 
 {% endblock %}

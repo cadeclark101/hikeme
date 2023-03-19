@@ -2,11 +2,6 @@ from django.db import models
 from django.conf import settings
 
 
-class Status(models.Model):
-    status = models.CharField(max_length=60)
-    date_posted = models.DateTimeField()
-    likes = models.IntegerField
-
 class Trail(models.Model):
     name = models.CharField(max_length=100)
 
@@ -23,11 +18,6 @@ class Person(models.Model):
     contact_number = models.IntegerField()
     emergency_contact_number = models.IntegerField()
     address = models.TextField()
-    statuses = models.ManyToManyField(
-        Status,
-        blank=True,
-        null=True
-    )
     current_trail = models.OneToOneField(
         Trail,
         on_delete=models.CASCADE,
@@ -56,6 +46,16 @@ class CheckIn(models.Model):
         on_delete=models.CASCADE
     )
     datetime_of_checkin = models.DateTimeField()
+
+
+class Status(models.Model):
+    status = models.CharField(max_length=60)
+    date_posted = models.DateTimeField()
+    likes = models.IntegerField
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE
+    )
     
 
 class Warning(models.Model):

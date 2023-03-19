@@ -1,13 +1,10 @@
 from django.shortcuts import  render, redirect
 from django.shortcuts import get_object_or_404
-
 from .forms import NewUserForm
 from django.views import View
 from .models import *
-
 from django.contrib.auth import login
 from django.contrib import messages
-
 from django.http import HttpResponse
 
 class Home(View):
@@ -17,10 +14,13 @@ class Home(View):
             self.current_person = get_object_or_404(Person, auth_user_id = self.current_user.id)
 
             return render(request=request, template_name="home.html", 
-            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail, "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint, "all_trails":self.getAllTrails, "all_warnings":self.getWarnings, "all_check_ins":self.getAllCheckIns, "last_check_in":self.getLastUserCheckIn, "risk_counts":self.getWarningCounts, "next_checkpoint":self.getNextCheckPoint})
+            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail, "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint, "all_trails":self.getAllTrails, "all_warnings":self.getWarnings, "all_check_ins":self.getAllCheckIns, "last_check_in":self.getLastUserCheckIn, "risk_counts":self.getWarningCounts, "next_checkpoint":self.getNextCheckPoint,},)
         else:
             return redirect("/accounts/login")
 
+    def post(self,request):
+        print(list(request.POST.items()))
+        
     def getCurrentUserTrail(self):
         current_trail = get_object_or_404(Trail, pk = self.current_person.current_trail_id)
         return current_trail
@@ -80,3 +80,4 @@ def register_request(request):
         messages.error(request, "Error when registering")
     form = NewUserForm()
     return render (request=request, template_name="registration/register.html", context={"register_form":form,})
+

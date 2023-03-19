@@ -2,6 +2,25 @@
 
 {% block title %}HikeMe{% endblock %}
 
+{% block script %}
+    <script>
+        console.log("whats");
+        base_url = window.location.hostname + ":" + window.location.port;
+
+        const websocket = new WebSocket( "ws://" + base_url );
+
+        websocket.onopen = function(event) {
+            console.log("client connected");
+            websocket.send("client sends welcome");
+        }
+
+        websocket.onmessage = function(event) {
+            console.log("client says server message recieved: ", event);
+        }
+
+    </script>
+{% endblock script %}
+
 {% block content %} 
     <div class="container-fluid mt-n3">
         <div class="row container-fluid">
@@ -19,14 +38,7 @@
                             <li class="list-group-item list-group-item-warning font-weight-bold float-left">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.1 }}</span></li>
                             <li class="list-group-item list-group-item-success font-weight-bold float-left">LOW RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.2 }}</span></li>
                             <br>
-                            <button type="button" class="btn btn-outline-danger float-left">New Warning</button>
                         </ul>
-                    </div>
-                    <div class="col">
-                        <div class="card-body">
-                            <p class="card-text">DIFFICULTY RATING<br>TRAIL LENGTH<br>CONTACT</p>
-                            <a href="#" class="btn btn-primary">View Trail</a>
-                        </div>
                     </div>
                 </div>
 
@@ -49,11 +61,9 @@
 
                 <div class="row py-4 container-fluid">
                     <div class="col border-right border-left text-center">
-                        <input class="form-control form-control-lg" type="text" placeholder="Status title:">
-                        <br>
-                        <input class="form-control" type="text" placeholder="Write your new status here!">
-                        <br>
-                        <button type="submit" class="btn btn-primary">POST STATUS</button>
+                        <button type="submit" class="btn btn-danger mr-3 p-3">NEW WARNING</button>
+                        <button type="submit" class="btn btn-warning mr-3 p-3">END HIKE</button>
+                        <button type="submit" class="btn btn-primary mr-3 p-3">NEW STATUS</button>
                     </div>
                 </div>
             </div>
