@@ -2,3 +2,4 @@ hikeme-venv/
 .env
 hikeme/__pycache__/
 hikeme_app/__pycache__/
+hikeme_app/migrations/__pycache__

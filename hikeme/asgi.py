@@ -1,23 +1,17 @@
-"""
-ASGI config for hikeme project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
-"""
-from channels.routing import ProtocolTypeRouter, URLRouter
 import os
+
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hikeme.settings')
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
 
-asgi_application = get_asgi_application() 
+from hikeme.routing import ws_urlpatterns
 
-import hikeme_app.routing
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'examplechannels.settings')
 
-
-application = ProtocolTypeRouter({
-            "http": asgi_application,
-            "websocket": URLRouter(hikeme_app.routing.websocket_urlpatterns) 
-                       })
+application = ProtocolTypeRouter(
+    {
+        'http': get_asgi_application(),
+        'websocket': AuthMiddlewareStack(URLRouter(ws_urlpatterns)),
+    }
+)

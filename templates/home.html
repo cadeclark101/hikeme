@@ -4,18 +4,24 @@
 
 {% block script %}
     <script>
-        console.log("whats");
-        base_url = window.location.hostname + ":" + window.location.port;
-
-        const websocket = new WebSocket( "ws://" + base_url );
-
-        websocket.onopen = function(event) {
-            console.log("client connected");
-            websocket.send("client sends welcome");
+        number_one=document.getElementById('main')
+        var wsStart='ws://'
+        var endpoint=wsStart + window.location.host + window.location.pathname
+        var socket = new WebSocket(endpoint)
+        console.log(endpoint)
+        
+        
+        socket.onopen =function(e){
+        console.log('open',e)
+        socket.send(1)
         }
-
-        websocket.onmessage = function(event) {
-            console.log("client says server message recieved: ", event);
+        
+        
+        socket.onmessage=function(e){
+        console.log('message',e)
+        number_one.innerHTML=e.data
+        socket.send(1)
+        
         }
 
     </script>
@@ -76,7 +82,7 @@
                 </div>
             </div>
             <div class="col border">
-                News
+                <div id="main">hello world</div>
             </div>
         </div>
     </div>

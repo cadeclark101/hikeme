@@ -1,13 +1,41 @@
-from channels.generic.websocket import WebsocketConsumer
+import asyncio
+import json
+from channels.consumer import AsyncConsumer
+from random import randint
+from time import sleep
 
-class JoinAndLeave(WebsocketConsumer):
-    def connect(self):
-        print("server says connected")
-        self.accept()
+class PracticeConsumer(AsyncConsumer):
 
-    def receive(self, text_data=None, bytes_data=None):
-        print("server says client message received: ", text_data)
-        self.send("Server sends Welcome")
-    
-    def disconnect(self, code):
-        print("server says disconnected")
+    async def websocket_connect(self,event):
+        # when websocket connects
+        print("connected",event)
+
+        await self.send({"type": "websocket.accept",
+                         })
+
+
+
+        await self.send({"type":"websocket.send",
+                         "text":0})
+
+
+
+
+
+    async def websocket_receive(self,event):
+        # when messages is received from websocket
+        print("receive",event)
+
+
+
+        sleep(1)
+
+        await self.send({"type": "websocket.send",
+                         "text":str(randint(0,100))})
+
+
+
+
+    async def websocket_disconnect(self, event):
+        # when websocket disconnects
+        print("disconnected", event)
