@@ -13,8 +13,8 @@ class UserConsumer(WebsocketConsumer):
         )
         self.accept() # call this last
 
-    def websocket_disconnect(self, event):
-        async_to_sync(self.channel_layer_group.group_discard)(
+    def websocket_disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
             self.user_group_name, self.channel_name
         )
 
@@ -22,5 +22,5 @@ class UserConsumer(WebsocketConsumer):
         user = event["data"]
         self.send(json.dumps({"user": user}))
 
-    def websocket_receive(self):
+    def websocket_receive(self, data):
         pass

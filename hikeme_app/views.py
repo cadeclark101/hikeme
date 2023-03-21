@@ -14,29 +14,14 @@ class Home(View):
             self.current_person = get_object_or_404(Person, auth_user_id = self.current_user.id)
 
             return render(request=request, template_name="home.html", 
-            context={"current_person":self.current_person, "current_trail":self.getCurrentUserTrail, "current_trail_checkpoint":self.getCurrentUserTrailCheckpoint, "all_trails":self.getAllTrails, "all_warnings":self.getWarnings, "all_check_ins":self.getAllCheckIns, "last_check_in":self.getLastUserCheckIn, "risk_counts":self.getWarningCounts, "next_checkpoint":self.getNextCheckPoint,},)
+            context={"current_person":self.current_person, "current_hike":self.getCurrentHike, "all_warnings":self.getWarnings, "all_check_ins":self.getAllCheckIns, "last_check_in":self.getLastUserCheckIn, "risk_counts":self.getWarningCounts, "next_checkpoint":self.getNextCheckpoint,},)
         else:
             return redirect("/accounts/login")
 
-    def post(self,request):
-        print(list(request.POST.items()))
-        
-    def getCurrentUserTrail(self):
-        current_trail = get_object_or_404(Trail, pk = self.current_person.current_trail_id)
-        return current_trail
-
-    def getCurrentUserTrailCheckpoint(self):
-        current_trail_checkpoint = get_object_or_404(Trail_Checkpoint, pk = self.current_person.current_trail_checkpoint_id)
-        return current_trail_checkpoint
-
-    def getAllTrails(self):
-        all_trails = Trail.objects.all()
-        return all_trails
-
-    def getNewsFeed(self):
-        news_current_checkpoint = get_object_or_404(News, relevant_trail_checkpoint = self.current_person.current_trail_checkpoint_id)
-        news_current_trail = get_object_or_404(News, relevant_trail = self.current_person.current_trail_id)
-        return news_current_checkpoint, news_current_trail
+    def getCurrentHike(self):
+        current_hike = Hike.objects.filter(person = self.current_user.id).last()
+        return current_hike
+    
 
     def getWarnings(self):
         all_warnings = Warning.objects.filter(person = self.current_person.id)
@@ -57,16 +42,13 @@ class Home(View):
         last_check_in = CheckIn.objects.filter(person = self.current_person.id).last()
         return last_check_in
 
-    def getNextCheckPoint(self):
-        all_checkpoints_for_trail = Trail_Checkpoint.objects.filter(trail = self.current_person.current_trail)
-        for i in all_checkpoints_for_trail:
-            if (self.current_person.current_trail_checkpoint.id + 1) == i.id:
-                next_checkpoint = Trail_Checkpoint.objects.filter(id = (self.current_person.current_trail_checkpoint.id + 1))
-                return next_checkpoint[0]
+    # THIS WILL NOT WORK WHEN MULTIPLE TRAILS ARE ADDED
+    def getNextCheckpoint(self):
+        last_check_in = self.getLastUserCheckIn()
+        next_checkpoint = Trail_Checkpoint.objects.filter(trail_id = (last_check_in.trail.id)).filter(id = last_check_in.trail_checkpoint.id + 1)
+        return next_checkpoint[0]
 
-    def getRelevantStatuses(self):
-        pass
-
+        
 
 
 def register_request(request):
