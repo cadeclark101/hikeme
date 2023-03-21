@@ -1,41 +1,26 @@
-import asyncio
 import json
-from channels.consumer import AsyncConsumer
-from random import randint
-from time import sleep
-
-class PracticeConsumer(AsyncConsumer):
-
-    async def websocket_connect(self,event):
-        # when websocket connects
-        print("connected",event)
-
-        await self.send({"type": "websocket.accept",
-                         })
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
 
 
 
-        await self.send({"type":"websocket.send",
-                         "text":0})
+class UserConsumer(WebsocketConsumer):
+    def websocket_connect(self, event):
+        self.user_id = self.scope["user"]
+        self.user_group_name = "active_users"
+        async_to_sync(self.channel_layer.group_add)(
+            self.user_group_name, self.channel_name
+        )
+        self.accept() # call this last
 
+    def websocket_disconnect(self, event):
+        async_to_sync(self.channel_layer_group.group_discard)(
+            self.user_group_name, self.channel_name
+        )
 
+    def send_user(self, event):
+        user = event["data"]
+        self.send(json.dumps({"user": user}))
 
-
-
-    async def websocket_receive(self,event):
-        # when messages is received from websocket
-        print("receive",event)
-
-
-
-        sleep(1)
-
-        await self.send({"type": "websocket.send",
-                         "text":str(randint(0,100))})
-
-
-
-
-    async def websocket_disconnect(self, event):
-        # when websocket disconnects
-        print("disconnected", event)
+    def websocket_receive(self):
+        pass
