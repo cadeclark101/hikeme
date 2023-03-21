@@ -4,10 +4,14 @@
 
 {% block script %}
     <script>
-        var wsStart='ws://'
-        var endpoint=wsStart + window.location.host + window.location.pathname
-        var socket = new WebSocket(endpoint)
-        
+        var wsStart='ws://';
+        var endpoint=wsStart + window.location.host + window.location.pathname;
+        var socket = new WebSocket(endpoint);
+
+        $(document).ready(function() { 
+            $('#warning_template_container').hide();
+
+        });     
 
     </script>
 {% endblock script %}
@@ -65,6 +69,9 @@
                     <br>
                     <div id="warning_template_container">
                         {% include "warning.html" %}    
+                    </div>
+                    <div id="view_hike_template_container">
+                        {% include "view_hike.html" %}
                     </div>
                 </div>
             </div>

@@ -42,7 +42,6 @@ class Home(View):
         last_check_in = CheckIn.objects.filter(person = self.current_person.id).last()
         return last_check_in
 
-    # THIS WILL NOT WORK WHEN MULTIPLE TRAILS ARE ADDED
     def getNextCheckpoint(self):
         last_check_in = self.getLastUserCheckIn()
         next_checkpoint = Trail_Checkpoint.objects.filter(trail_id = (last_check_in.trail.id)).filter(id = last_check_in.trail_checkpoint.id + 1)
