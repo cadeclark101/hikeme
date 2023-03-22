@@ -3,15 +3,10 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 
 {% block content %} 
-    <div class="col">
-        <h2>VIEW HIKE</h2>
-        <div class="row py-4 container-fluid">
-            <div class="col border-right border-left text-center">
-                <button type="submit" class="btn btn-danger mr-4 p-4">END HIKE</button>
-                <button type="submit" class="btn btn-warning mr-4 p-4">NEW HIKE</button>
-                <button type="submit" class="btn btn-success mr-4 p-4">BROWSE HIKES</button>
-            </div>
+        <div class="fixed-bottom bg-dark">
+            <button type="submit" class="btn btn-danger p-4">END HIKE</button>
+            <button type="submit" class="btn btn-warning p-4">NEW HIKE</button>
+            <button type="submit" class="btn btn-success p-4">BROWSE HIKES</button>
         </div>
-    </div>
 
 {% endblock %}

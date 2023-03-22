@@ -10,61 +10,14 @@
 
         $(document).ready(function() { 
             $('#warning_template_container').hide();
-
         });     
 
     </script>
 {% endblock script %}
 
 {% block content %} 
-    <div class="container-fluid mt-n3">
-        <div class="row container-fluid">
-            <div class="col">
-                <div class="row py-1">
-                    <p class="px-2"><h1>{{ current_hike.trail.name }} 
-                    </h1></p>
-                </div>
-
-                <div class="row container-fluid">
-                    <div class="col border-right">
-                        <ul class="list-group py-3">
-                            <li class="list-group-item list-group-item-danger font-weight-bold float-left">HIGH RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.0 }}</span></li>
-                            <li class="list-group-item list-group-item-warning font-weight-bold float-left">MEDIUM RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.1 }}</span></li>
-                            <li class="list-group-item list-group-item-success font-weight-bold float-left">LOW RISK<span class="badge badge-primary badge-pill float-right">{{ risk_counts.2 }}</span></li>
-                            <br>
-                        </ul>
-                    </div>
-                </div>
-
-                <br>
-
-                <div class="row py-4 container-fluid border">
-                    <div class="col border-right text-center">
-                        <div class="font-weight-bold font-italic">LAST CHECKPOINT</div>
-                        <span class="h3">{{ last_check_in.trail_checkpoint.name }}</span>
-                        <br>
-                        <small class="text-muted">{{ last_check_in.datetime_of_checkin }}</small>
-                    </div>
-                    <div class="col border-left text-center">
-                        <div class="font-weight-bold font-italic">NEXT CHECKPOINT</div>
-                        <span class="h3">{{ next_checkpoint.name }}</span>
-                        <br>
-                        <small class="text-muted">{{ last_check_in.datetime_of_checkin }}</small>
-                        <small class="text-muted">{% now "jS F Y H:i" %}</small>
-                    </div>
-                </div>
-
-                <div class="row py-4 container-fluid">
-                    <div class="col border-right border-left text-center">
-                        <button type="submit" class="btn btn-danger mr-3 p-3">NEW WARNING</button>
-                        <button type="submit" class="btn btn-warning mr-3 p-3">VIEW HIKE</button>
-                        <button type="submit" class="btn btn-primary mr-3 p-3">NEW STATUS</button>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col border">
+        <span class="display-2 float-right font-weight-bold font-italic text-white">{{current_hike.trail.name}}</span>
+            <div id="widget-container h-100">
                 <div class="basic">
                     <br>
                     <div id="warning_template_container">
@@ -74,9 +27,6 @@
                         {% include "view_hike.html" %}
                     </div>
                 </div>
-            </div>
-            <div class="col border">
-                <div id="main">MAP HERE</div>
             </div>
         </div>
     </div>

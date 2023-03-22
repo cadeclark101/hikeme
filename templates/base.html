@@ -1,32 +1,46 @@
 <html>
     <header>
         <meta charset="utf-8">
-        <title>{% block title %}HikeMe{% endblock %}</title>
+          <title>{% block title %}HikeMe{% endblock %}</title>
         {% load static %}
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <head>
-            <script src="{% static 'js/jquery-3.6.4.js' %}"></script>
-        </head>
-
-        <nav class="h3 navbar sticky-top h-0 mt-n3">
-            <blockquote class="blockquote">
-                <p class="mb-0 display-2 font-weight-bold">HikeMe</p>
-                <p class="text-muted"><em>Plan, view and, track your hiking progression.</em></p>
-            </blockquote>
-            <span>
-                <a class="text-dark mx-auto border-right mt-n5 mb-5 px-3" href="#">Hike</a> 
-                <a class="text-dark mx-auto border-right border-left mt-n4 mb-4 px-3" href="#">Statistics</a>
-                <a class="text-dark mx-auto border-right border-left mt-n4 mb-4 px-3" href="#">Leaderboard</a>
-                <a class="text-dark mx-auto border-left mt-n5 mb-5 px-3" href="#">Account</a>
-            </span>
+          <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+          <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+      
+      <nav id="sidebarMenu" class="d-lg-block sidebar position-sticky">
+            <div class="position-absolute">
+              <div class="list-group list-group-flush">
+                <button class="btn btn-warning w-100 p-5" type="button" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu"><span class="display-3 font-weight-bold ">MENU</span>
+                </button>
+                <div class="collapse" id="collapseMenu">
+                  <button href="#" class="btn-dark ripple w-100 p-5">        
+                      <span class="h1">HIKE</span>
+                  </button>
+                  <button href="#" class="btn-dark ripple w-100 p-5">
+                    <span class="h1">STATISTICS</span>
+                  </button>
+                  <button href="#" class="btn-dark ripple w-100 p-5">
+                      <span class="h1">LEADERBOARD</span>
+                  </button>
+                  <button href="#" class="btn-dark ripple w-100 p-5">
+                    <span class="h1">ACCOUNT</span>
+                  </button>
+                </div>
+              </div>
+            </div>
         </nav>
     </header>
-    <body>
-        <main class="main">
-                {% block content %}
+
+
+    <body class="bg-secondary">
+        <main>
+          <div class="w-100 bg-dark">
+              {% block content %}
                 {% endblock %} 
+          </div>
         </main>
+
+        <script src="{% static 'js/jquery-3.6.4.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.js' %}"> </script>
     </body>
 
     {%block script%}
