@@ -16,7 +16,6 @@
 {% endblock script %}
 
 {% block content %} 
-        <span class="display-2 float-right font-weight-bold font-italic text-white">{{current_hike.trail.name}}</span>
             <div id="widget-container h-100">
                 <div class="basic">
                     <br>
@@ -24,7 +23,7 @@
                         {% include "warning.html" %}    
                     </div>
                     <div id="view_hike_template_container">
-                        {% include "view_hike.html" %}
+                        {% include "current_hike.html" %}
                     </div>
                 </div>
             </div>

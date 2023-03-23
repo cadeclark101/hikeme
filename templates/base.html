@@ -1,42 +1,49 @@
 <html>
     <header>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
           <title>{% block title %}HikeMe{% endblock %}</title>
         {% load static %}
           <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
           <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-      
-      <nav id="sidebarMenu" class="d-lg-block sidebar position-sticky">
-            <div class="position-absolute">
-              <div class="list-group list-group-flush">
-                <button class="btn btn-warning w-100 p-5" type="button" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu"><span class="display-3 font-weight-bold ">MENU</span>
-                </button>
-                <div class="collapse" id="collapseMenu">
-                  <button href="#" class="btn-dark ripple w-100 p-5">        
-                      <span class="h1">HIKE</span>
-                  </button>
-                  <button href="#" class="btn-dark ripple w-100 p-5">
-                    <span class="h1">STATISTICS</span>
-                  </button>
-                  <button href="#" class="btn-dark ripple w-100 p-5">
-                      <span class="h1">LEADERBOARD</span>
-                  </button>
-                  <button href="#" class="btn-dark ripple w-100 p-5">
-                    <span class="h1">ACCOUNT</span>
-                  </button>
-                </div>
-              </div>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col pb-0 py-0 pl-0 pr-0">
+            <nav id="sidebarMenu" class="d-lg-block sidebar position-sticky">
+                  <div class="position-absolute w-100">
+                    <div class="list-group list-group-flush">
+                      <button class="btn btn-warning w-100 p-1 shadow-lg border-white font-italic" type="button" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu"><span class="h1 font-weight-bold w-100">H</span></button>
+                      <div class="collapse" id="collapseMenu">
+                        <button href="#" class="btn btn-danger w-100 p-1 shadow border border-white">        
+                            <span class="font-weight-bold font-italic">HIKE</span>
+                        </button>
+                        <button href="#" class="btn btn-danger w-100 p-1 shadow border border-white">
+                          <span class="font-weight-bold font-italic">STATISTICS</span>
+                        </button>
+                        <button href="#" class="btn btn-danger w-100 p-1 shadow border border-white">
+                            <span class="font-weight-bold font-italic">LEADERBOARD</span>
+                        </button>
+                        <button href="#" class="btn btn-danger w-100 p-1 shadow border border-white">
+                          <span class="font-weight-bold font-italic">ACCOUNT</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              </nav>
             </div>
-        </nav>
+            <div class="col">
+              <p class="display-4 font-weight-bold text-white">HikeMe.</p>
+          </div>
+        </div>
+    </div>
     </header>
 
 
-    <body class="bg-secondary">
+    <body class="bg-dark">
         <main>
-          <div class="w-100 bg-dark">
               {% block content %}
-                {% endblock %} 
-          </div>
+              {% endblock %} 
         </main>
 
         <script src="{% static 'js/jquery-3.6.4.js' %}"></script>
